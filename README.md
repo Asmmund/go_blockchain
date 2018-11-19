@@ -1,2 +1,5 @@
 # go_blockchain
-alpha varsion of  implementation of blockchain using Go
+alpha version of  implementation of blockchain using Go
+
+## Run
+type `% go run main.go` in your terminal.
