@@ -31,10 +31,10 @@ func (cli *CommandLine) addBlock(data string) {
 	fmt.Println("Added Block!")
 }
 
-func PrintoutBlockInfo(block *Block) {
-	fmt.Printf("previous Hash in block %s\n", block.PrevHash)
-	fmt.Printf("Data in block %s\n", block.Data)
-	fmt.Printf("hash in block %x\n", block.Hash)
+func PrintoutBlockInfo(block *blockchain.Block) {
+	fmt.Printf("previous Hash in block: %s\n", block.PrevHash)
+	fmt.Printf("Data in block: %s\n", block.Data)
+	fmt.Printf("hash in block: %x\n", block.Hash)
 
 	pow := blockchain.NewProof(block)
 	fmt.Printf("PoW: %s\n", strconv.FormatBool(pow.Validate()))
@@ -45,9 +45,9 @@ func PrintoutBlockInfo(block *Block) {
 func (cli *CommandLine) run() {
 	cli.validateArgs()
 
-	addBlockCmd := flag.newFlagSet("add", flag.ExitOnError)
-	printChainCmd := flag.newFlagSet("print", flag.ExitOnError)
-	addBlockData := flag.newFlagSet("block", "Block data")
+	addBlockCmd := flag.NewFlagSet("add", flag.ExitOnError)
+	printChainCmd := flag.NewFlagSet("print", flag.ExitOnError)
+	addBlockData := addBlockCmd.String("block", "", "Block data")
 
 	switch os.Args[1] {
 	case "add":
@@ -81,9 +81,17 @@ func (cli *CommandLine) printChain() {
 	iter := cli.blockchain.Iterator()
 
 	for {
-		block := iter.Next
+		block := iter.Next()
+		fmt.Println()
 
-		PrintoutBlockInfo(block)
+		fmt.Printf("previous Hash in block: %s\n", block.PrevHash)
+		fmt.Printf("Data in block: %s\n", block.Data)
+		fmt.Printf("hash in block: %x\n", block.Hash)
+
+		pow := blockchain.NewProof(block)
+		fmt.Printf("PoW: %s\n", strconv.FormatBool(pow.Validate()))
+		fmt.Println()
+
 		if len(block.PrevHash) == 0 {
 			break
 		}
